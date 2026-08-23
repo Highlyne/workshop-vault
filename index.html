@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Executive AI Workshop | August 27, 2026</title>
+<meta name="description" content="A hands-on executive workshop on connecting Claude to Salesforce, Google, and business systems using Model Context Protocol (MCP)." />
+<style>
+  :root {
+    --ink: #0a0a0d;
+    --muted: #5e6068;
+    --paper: #f7f6f2;
+    --card: #ffffff;
+    --line: #d9d9d4;
+    --blue: #075cff;
+    --blue-dark: #0036b8;
+    --coral: #ff5b62;
+    --lavender: #d9d1ff;
+    --soft-blue: #e8efff;
+    --black: #070707;
+    --shadow: 0 18px 50px rgba(7, 7, 7, 0.08);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.55;
+  }
+  a { color: inherit; }
+  .wrap { width: min(1160px, calc(100% - 44px)); margin: 0 auto; }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--black);
+  }
+  nav { display:flex; align-items:center; justify-content:space-between; min-height:76px; gap:24px; }
+  .brand { font-weight: 900; letter-spacing: -.035em; text-transform:uppercase; font-size:14px; }
+  .brand span { color: var(--blue); }
+  nav .links { display:flex; gap:26px; font-size:13px; font-weight:700; color:var(--ink); }
+  nav .links a { text-decoration:none; }
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:12px 18px; border-radius:4px; text-decoration:none; font-weight:800; font-size:13px;
+    border:1px solid var(--black); transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    text-transform:uppercase; letter-spacing:.05em;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { color:#fff; background:var(--blue); box-shadow:6px 6px 0 var(--black); }
+  .btn-primary:hover { box-shadow:8px 8px 0 var(--black); }
+  .btn-ghost { background:#fff; }
+
+  .hero { padding:72px 0 68px; position:relative; overflow:hidden; background:var(--blue); color:#fff; border-bottom:1px solid var(--black); }
+  .hero::before, .hero::after { content:""; position:absolute; pointer-events:none; }
+  .hero::before { width:420px; height:420px; right:-100px; top:-120px; background:var(--coral); border-radius:50%; opacity:.94; }
+  .hero::after { width:280px; height:280px; left:-90px; bottom:-140px; background:var(--lavender); transform:rotate(18deg); }
+  .hero .wrap { position:relative; z-index:1; }
+  .eyebrow { display:inline-flex; gap:10px; align-items:center; padding:8px 12px; border:1px solid rgba(255,255,255,.85); background:rgba(255,255,255,.12); border-radius:999px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
+  .dot { width:7px; height:7px; background:#fff; border-radius:999px; }
+  h1 { font-size:clamp(48px,7.4vw,88px); line-height:.93; letter-spacing:-.06em; max-width:980px; margin:24px 0 24px; font-weight:900; }
+  .gradient { color:#fff; }
+  .lede { font-size:20px; color:#f4f4f4; max-width:760px; margin:0; }
+  .hero-meta { display:flex; flex-wrap:wrap; gap:10px; margin:28px 0; }
+  .pill { padding:10px 14px; background:#fff; color:var(--ink); border:1px solid var(--black); border-radius:4px; font-weight:800; font-size:13px; }
+  .hero-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+  .hero .btn-ghost { background:transparent; color:#fff; border-color:#fff; }
+
+  section { padding:76px 0; }
+  .section-kicker { color:var(--blue); font-weight:900; font-size:12px; text-transform:uppercase; letter-spacing:.16em; }
+  h2 { margin:8px 0 14px; font-size:clamp(36px,5vw,56px); line-height:.98; letter-spacing:-.055em; font-weight:900; max-width:900px; }
+  .section-intro { color:var(--muted); max-width:720px; font-size:18px; }
+  .grid { display:grid; gap:18px; }
+  .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .card { background:var(--card); border:1px solid var(--black); border-radius:var(--radius); padding:28px; box-shadow:var(--shadow); }
+  .card h3 { margin:0 0 9px; font-size:21px; letter-spacing:-.025em; font-weight:850; }
+  .card p { margin:0; color:var(--muted); }
+  .number { width:40px; height:40px; display:grid; place-items:center; border-radius:4px; background:var(--blue); color:#fff; font-weight:900; margin-bottom:18px; border:1px solid var(--black); }
+  .quote { margin:28px 0 0; padding:24px 28px; border-left:8px solid var(--coral); background:var(--black); color:#fff; border-radius:0; box-shadow:8px 8px 0 var(--blue); font-size:20px; font-weight:800; }
+  .agenda { margin-top:30px; }
+  .agenda-row { display:grid; grid-template-columns:96px 1fr; gap:18px; padding:22px 0; border-top:1px solid var(--line); }
+  .agenda-row:first-child { border-top:0; }
+  .time { font-weight:900; color:var(--blue); font-size:14px; letter-spacing:.1em; }
+  .agenda-row strong { display:block; margin-bottom:3px; font-size:20px; }
+  .agenda-row p { margin:0; color:var(--muted); }
+
+  .prework { background:var(--black); color:#fff; }
+  .prework .section-kicker { color:var(--coral); }
+  .prework h2 { color:#fff; }
+  .prework .section-intro { color:#cfcfd4; }
+  .checklist { list-style:none; padding:0; margin:24px 0 0; display:grid; gap:14px; }
+  .checklist li { display:flex; gap:12px; align-items:flex-start; background:#fff; color:var(--ink); border:1px solid #fff; border-radius:6px; padding:16px; }
+  .check { flex:0 0 22px; height:22px; border:2px solid var(--blue); border-radius:4px; margin-top:2px; position:relative; }
+  .check::after { content:""; position:absolute; left:4px; top:1px; width:6px; height:11px; border-right:2px solid var(--blue); border-bottom:2px solid var(--blue); transform:rotate(45deg); }
+  .checklist strong { display:block; }
+  .checklist span { color:var(--muted); font-size:14px; }
+  .callout { margin-top:22px; padding:18px 20px; background:var(--blue); border:1px solid #fff; border-radius:6px; color:#fff; }
+
+  .host { display:grid; grid-template-columns:140px 1fr; gap:28px; align-items:center; }
+  .avatar { width:140px; height:140px; border-radius:6px; display:grid; place-items:center; background:var(--coral); color:var(--black); font-size:42px; font-weight:900; border:1px solid var(--black); box-shadow:8px 8px 0 var(--blue); }
+  .host h3 { margin:0 0 5px; font-size:30px; letter-spacing:-.035em; }
+  .host .role { color:var(--blue); font-weight:900; }
+  .host p { color:var(--muted); margin:12px 0 0; }
+  .social-links { display:flex; gap:10px; margin-top:12px; }
+  .social-links a { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border:1px solid var(--black); border-radius:4px; background:#fff; transition:transform .18s ease, box-shadow .18s ease; }
+  .social-links a:hover { transform:translateY(-2px); box-shadow:3px 3px 0 var(--black); }
+  .social-links svg { width:16px; height:16px; }
+
+  footer { padding:42px 0 62px; color:var(--muted); font-size:13px; background:#fff; border-top:1px solid var(--black); }
+  .footer-line { display:flex; justify-content:space-between; gap:20px; padding-top:22px; }
+  @media (max-width: 820px) {
+    nav .links { display:none; }
+    .grid-3, .grid-2 { grid-template-columns:1fr; }
+    .agenda-row { grid-template-columns:1fr; gap:4px; }
+    .host { grid-template-columns:1fr; }
+    .hero::before { right:-180px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { width:min(100% - 28px, 1160px); }
+    .hero { padding-top:56px; }
+    h2 { font-size:36px; }
+    .hero-actions .btn { width:100%; }
+    .footer-line { flex-direction:column; }
+  }
+</style>>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="brand">Executive AI <span>Workshop</span></div>
+      <div class="links">
+        <a href="#workshop">Workshop</a>
+        <a href="#goals">Goals</a>
+        <a href="#prework">Pre-work</a>
+        <a href="#host">Host</a>
+      </div>
+      <a class="btn btn-primary" href="#prework">Prepare for the workshop</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="workshop">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span> Executive hands-on workshop · August 27, 2026</span>
+      <h1>Connect AI to the business.<br><span class="gradient">Make it useful.</span></h1>
+      <p class="lede">A practical executive workshop on using Claude, Salesforce, Google, and Model Context Protocol to turn everyday business systems into a connected AI assistant.</p>
+      <div class="hero-meta">
+        <div class="pill">August 27, 2026</div>
+        <div class="pill">Black Women On Boards</div>
+        <div class="pill">Hands-on + executive focused</div>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#goals">See what you'll build</a>
+        <a class="btn btn-ghost" href="#prework">View pre-work</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="goals">
+    <div class="wrap">
+      <div class="section-kicker">Why we're here</div>
+      <h2>From AI curiosity to an AI capability.</h2>
+      <p class="section-intro">You don't need to become a technologist. The goal is to understand how AI can work with the systems you already use and leave with ideas you can put to work immediately.</p>
+      <div class="grid grid-3" style="margin-top:30px">
+        <article class="card"><div class="number">01</div><h3>See AI in context</h3><p>Connect Claude to trusted business information instead of relying only on what you paste into a chat.</p></article>
+        <article class="card"><div class="number">02</div><h3>Understand the connection</h3><p>See how MCP lets an AI assistant discover and use capabilities across Salesforce, Google, and other systems.</p></article>
+        <article class="card"><div class="number">03</div><h3>Leave with a starting point</h3><p>Identify one daily workflow you can improve with AI and a practical next step to take after the workshop.</p></article>
+      </div>
+      <div class="quote">The executive experience: speak in business language. Let AI translate that into the right tools, data, and actions.</div>
+    </div>
+  </section>
+
+  <section style="background:#fff">
+    <div class="wrap">
+      <div class="section-kicker">What we'll explore</div>
+      <h2>Four capabilities. One connected experience.</h2>
+      <div class="agenda">
+        <div class="agenda-row"><div class="time">01</div><div><strong>Connect Claude to Salesforce</strong><p>Find an account, retrieve CRM context, explore pipeline, activity, and customer issues.</p></div></div>
+        <div class="agenda-row"><div class="time">02</div><div><strong>Connect Claude to Google</strong><p>Bring Calendar, Gmail, and documents into the same assistant experience.</p></div></div>
+        <div class="agenda-row"><div class="time">03</div><div><strong>Use MCP to orchestrate</strong><p>See how Claude can use one system to find information and another system to add context.</p></div></div>
+        <div class="agenda-row"><div class="time">04</div><div><strong>Build an executive workflow</strong><p>Turn the connected tools into a practical daily use case such as meeting preparation, customer briefing, or opportunity review.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prework" class="prework">
+    <div class="wrap">
+      <div class="section-kicker">Before you arrive</div>
+      <h2>Your pre-work is intentionally light.</h2>
+      <p class="section-intro">Please complete these steps before the workshop so we can spend our time experimenting rather than troubleshooting access.</p>
+      <div class="grid grid-2" style="margin-top:28px">
+        <div class="card">
+          <h3>Claude</h3>
+          <ul class="checklist">
+            <li><div class="check"></div><div><strong>Create or verify your Claude account</strong><span>Confirm you can sign in at claude.ai before the session.</span></div></li>
+            <li><div class="check"></div><div><strong>Use the browser for the workshop</strong><span>The workshop standard is Claude in the browser. No software installation is required.</span></div></li>
+            <li><div class="check"></div><div><strong>Check your corporate access</strong><span>Make sure claude.ai is reachable from the laptop and network you'll use.</span></div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Google</h3>
+          <ul class="checklist">
+            <li><div class="check"></div><div><strong>Confirm Google sign-in</strong><span>Make sure you can access Gmail and Google Calendar from your workshop laptop.</span></div></li>
+            <li><div class="check"></div><div><strong>Have MFA available</strong><span>Bring access to any authentication method your account requires.</span></div></li>
+            <li><div class="check"></div><div><strong>Check organization policy</strong><span>If your company restricts third-party Google integrations, confirm the appropriate access before the event.</span></div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Salesforce</h3>
+          <ul class="checklist">
+            <li><div class="check"></div><div><strong>Recommended: use the workshop org</strong><span>A preconfigured Salesforce environment will be available for the hands-on exercises.</span></div></li>
+            <li><div class="check"></div><div><strong>Advanced: bring your own org</strong><span>Your Salesforce admin must prepare the External Client App, MCP server, tools, and user permissions in advance.</span></div></li>
+            <li><div class="check"></div><div><strong>Test your own org at least one week ahead</strong><span>Bring-your-own-org participants should verify the Claude connection before workshop day.</span></div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Bring a real business question</h3>
+          <ul class="checklist">
+            <li><div class="check"></div><div><strong>Think of one repetitive workflow</strong><span>Examples: customer meeting prep, pipeline review, account research, or finding information across systems.</span></div></li>
+            <li><div class="check"></div><div><strong>Bring the question, not the data dump</strong><span>You should be able to ask for the outcome in your own words.</span></div></li>
+            <li><div class="check"></div><div><strong>Keep sensitive information out of personal accounts</strong><span>Use only data and accounts permitted by your organization's policies.</span></div></li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout"><strong>Recommended path:</strong> use the shared workshop Salesforce org unless you already have an administrator preparing your own environment. This keeps the session focused on the business experience rather than setup.</div>
+    </div>
+  </section>
+
+  <section id="host">
+    <div class="wrap">
+      <div class="section-kicker">Your hosts</div>
+      <h2>Meet your workshop team.</h2>
+      <div class="grid grid-2" style="margin-top:28px">
+        <div class="card host">
+          <div class="avatar" aria-hidden="true">KC</div>
+          <div>
+            <h3>Kathryn Charleston</h3>
+            <div class="role">Senior Director, Data and AI Architect</div>
+            <p></p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/kathryn-charleston/" target="_blank" rel="noopener" aria-label="Kathryn Charleston on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            </div>
+          </div>
+        </div>
+        <div class="card host">
+          <div class="avatar" aria-hidden="true">TH</div>
+          <div>
+            <h3>Tamara Hall</h3>
+            <div class="role">Principal GTM Engineer</div>
+            <p></p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/tamaraghall/" target="_blank" rel="noopener" aria-label="Tamara Hall on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+              <a href="https://tamaraghall.com/" target="_blank" rel="noopener" aria-label="Tamara Hall's website"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></a>
+            </div>
+          </div>
+        </div>
+        <div class="card host">
+          <div class="avatar" aria-hidden="true">MN</div>
+          <div>
+            <h3>Marcus Neal</h3>
+            <div class="role">Lead, Technical Architect</div>
+            <p></p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/marcus-neal-50994a139/" target="_blank" rel="noopener" aria-label="Marcus Neal on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            </div>
+          </div>
+        </div>
+        <div class="card host">
+          <div class="avatar" aria-hidden="true">WW</div>
+          <div>
+            <h3>Will Watkins</h3>
+            <div class="role">Lead, Technical Architect</div>
+            <p></p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/will-watkins-80440314/" target="_blank" rel="noopener" aria-label="Will Watkins on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-line">
+      <div>Executive AI Workshop · August 27, 2026</div>
+      <div>Claude · Salesforce · Google · MCP</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
