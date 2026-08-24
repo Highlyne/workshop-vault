@@ -103,7 +103,8 @@
   .callout { margin-top:22px; padding:18px 20px; background:var(--blue); border:1px solid #fff; border-radius:6px; color:#fff; }
 
   .host { display:grid; grid-template-columns:140px 1fr; gap:28px; align-items:center; }
-  .avatar { width:140px; height:140px; border-radius:6px; display:grid; place-items:center; background:var(--coral); color:var(--black); font-size:42px; font-weight:900; border:1px solid var(--black); box-shadow:8px 8px 0 var(--blue); }
+  .avatar { width:140px; height:140px; border-radius:6px; display:grid; place-items:center; background:var(--coral); color:var(--black); font-size:42px; font-weight:900; border:1px solid var(--black); box-shadow:8px 8px 0 var(--blue); overflow:hidden; flex-shrink:0; }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
   .host h3 { margin:0 0 5px; font-size:30px; letter-spacing:-.035em; }
   .host .role { color:var(--blue); font-weight:900; }
   .host p { color:var(--muted); margin:12px 0 0; }
@@ -230,7 +231,19 @@
           </ul>
         </div>
       </div>
-      <div class="callout"><strong>Recommended path:</strong> use the shared workshop Salesforce org unless you already have an administrator preparing your own environment. This keeps the session focused on the business experience rather than setup.</div>
+      <div class="card" style="margin-top:18px">
+          <div style="display:inline-block;padding:4px 10px;background:var(--lavender);border:1px solid var(--black);border-radius:4px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;">Optional</div>
+          <h3>Connect an Existing Enterprise MCP</h3>
+          <p style="margin:0 0 16px">If your organization already has an Enterprise MCP server or connector available, you may connect it to Claude before the workshop. An Enterprise MCP connection can allow Claude to securely interact with approved internal business systems — such as Salesforce, Microsoft Dynamics, HubSpot, or other enterprise applications — depending on what your organization has configured.</p>
+          <ul class="checklist">
+            <li><div class="check"></div><div><strong>Ask your IT or systems administrator</strong><span>Find out whether an Enterprise MCP connector is available for your organization.</span></div></li>
+            <li><div class="check"></div><div><strong>Follow your organization's approved instructions</strong><span>If a connector is available, use your organization's process for adding it to Claude.</span></div></li>
+            <li><div class="check"></div><div><strong>Authenticate and approve only authorized permissions</strong><span>Use your normal organizational credentials and approve only what your organization has authorized.</span></div></li>
+            <li><div class="check"></div><div><strong>Test the connection</strong><span>Confirm that Claude can see the expected connector and its available tools before workshop day.</span></div></li>
+            <li><div class="check"></div><div><strong>Using Claude Desktop for Enterprise MCP?</strong><span>If your organization uses Claude Desktop for its Enterprise MCP connection, follow your organization's instructions for installing and authenticating the connector there.</span></div></li>
+          </ul>
+        </div>
+      <div class="callout" style="margin-top:18px"><strong>Not sure if this applies to you?</strong> Don't worry — this step is completely optional. You do not need an existing Enterprise MCP server to participate. We'll provide the environment for all core exercises and explain the Enterprise MCP concept during the session.</div>
     </div>
   </section>
 
@@ -240,7 +253,7 @@
       <h2>Meet your workshop team.</h2>
       <div class="grid grid-2" style="margin-top:28px">
         <div class="card host">
-          <div class="avatar" aria-hidden="true">KC</div>
+          <div class="avatar"><img src="https://ca.slack-edge.com/E7T5PNK3P-U01GM51E6AD-fdf9f998e175-512" alt="Kathryn Charleston" /></div>
           <div>
             <h3>Kathryn Charleston</h3>
             <div class="role">Senior Director, Data and AI Architect</div>
@@ -251,7 +264,7 @@
           </div>
         </div>
         <div class="card host">
-          <div class="avatar" aria-hidden="true">TH</div>
+          <div class="avatar"><img src="https://ca.slack-edge.com/E7T5PNK3P-U01S5P9NWBS-a33f319c2250-512" alt="Tamara Hall" /></div>
           <div>
             <h3>Tamara Hall</h3>
             <div class="role">Principal GTM Engineer</div>
@@ -263,7 +276,7 @@
           </div>
         </div>
         <div class="card host">
-          <div class="avatar" aria-hidden="true">MN</div>
+          <div class="avatar"><img src="https://ca.slack-edge.com/E7T5PNK3P-U03K7U67FB8-b4e6d158b689-512" alt="Marcus Neal" /></div>
           <div>
             <h3>Marcus Neal</h3>
             <div class="role">Lead, Technical Architect</div>
@@ -274,7 +287,7 @@
           </div>
         </div>
         <div class="card host">
-          <div class="avatar" aria-hidden="true">WW</div>
+          <div class="avatar"><img src="https://ca.slack-edge.com/E7T5PNK3P-W011A6KLH54-a55073ef0ec8-512" alt="Will Watkins" /></div>
           <div>
             <h3>Will Watkins</h3>
             <div class="role">Lead, Technical Architect</div>
