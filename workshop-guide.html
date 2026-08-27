@@ -220,17 +220,21 @@
     border-radius: 4px;
     overflow: hidden;
   }
+  /* Connect screenshots range from 0.61 (tall) to 1.34 aspect, so give them
+     more vertical room than the wide dashboard previews get. */
+  .gallery-stage-tall { height: clamp(340px, 56vh, 600px); }
   .gallery-img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;   /* never crop a screenshot */
     border-radius: 4px;
     opacity: 0;
     transition: opacity 0.35s ease;
     pointer-events: none;
   }
+  .gallery-stage-tall .gallery-img { cursor: zoom-in; padding: 10px; }
   .gallery-img.gallery-active {
     opacity: 1;
     pointer-events: auto;
@@ -297,6 +301,17 @@
     transition: background 0.15s;
   }
   .gallery-dot.active { background: var(--bwob-blue); }
+
+  /* Standalone step screenshot (not part of a gallery) */
+  .step-figure {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    margin-top: 24px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
 
   /* ── Copyable text ── */
   .copyable {
@@ -594,24 +609,12 @@
         <li>Click <b>Connectors</b> &rarr; <b>+ Add Connector</b> &rarr; <b>... Add custom connector</b></li>
       </ol>
 
-      <div class="gallery" id="slide3-gallery" style="margin-top:24px;">
-        <div class="gallery-stage">
-          <img class="gallery-img" src="images/connect-step1.png" alt="Connect step 1">
-          <img class="gallery-img" src="images/connect-step2.png" alt="Connect step 2">
-          <div class="gallery-placeholder" id="slide3-placeholder">
-            <span>Connection Steps</span>
-            <span style="font-size:11px;opacity:0.6;font-weight:400;letter-spacing:1px;">images/connect-step1.png &nbsp;·&nbsp; connect-step2.png</span>
-          </div>
-        </div>
-        <div class="gallery-controls">
-          <button class="gallery-btn" onclick="slide3Go(-1)">&#8592;</button>
-          <span class="gallery-counter" id="slide3-counter">1 / 2</span>
-          <button class="gallery-btn" onclick="slide3Go(1)">&#8594;</button>
-        </div>
-        <div class="gallery-dots" id="slide3-dots">
-          <span class="gallery-dot active" onclick="slide3Show(0)"></span>
-          <span class="gallery-dot" onclick="slide3Show(1)"></span>
-        </div>
+      <img class="step-figure" src="images/connect-step2.png"
+           alt="Claude's Add custom connector dialog"
+           onerror="this.style.display='none';document.getElementById('step2-fallback').style.display='flex';">
+      <div id="step2-fallback" class="gallery-placeholder" style="display:none;position:relative;inset:auto;height:240px;max-width:960px;margin-top:24px;">
+        <span>Connection Step</span>
+        <span style="font-size:11px;opacity:0.6;font-weight:400;letter-spacing:1px;">images/connect-step2.png</span>
       </div>
     </div>
   </section>
@@ -626,11 +629,40 @@
         <li>Name the Custom Connector <b class="copyable">Salesforce Workshop</b> <button class="inline-copy" onclick="copyInline('Salesforce Workshop', this)" title="Copy to clipboard">&#128203;</button>.</li>
         <li>Paste the workshop MCP Server URL: <b class="copyable">https://api.salesforce.com/platform/mcp/v1/platform/sobject-all</b> <button class="inline-copy" onclick="copyInline('https://api.salesforce.com/platform/mcp/v1/platform/sobject-all', this)" title="Copy to clipboard">&#128203;</button>.</li>
         <li>Click continue. Claude will automatically detect which choices should be selected next.</li>
-        <li>Open <b>Advanced settings</b>; enter the Client ID and Client Secret shared by your facilitator.</li>
+        <li><b>Deselect 'No client ID'</b>; Then check <b>Use your own OAuth client</b>.</li> 
+        <li>Enter the Client ID. The details are shared by your facilitator.</li>
         <li>Click <b>Connect</b>.</li>
         <li>Sign in to Salesforce with the workshop username and password, then complete MFA.</li>
         <li>Authorize the connection.</li>
       </ol>
+
+      <div class="gallery" id="connect-gallery" style="margin-top:20px;">
+        <div class="gallery-stage gallery-stage-tall">
+          <img class="gallery-img" src="images/connect-step1.png" alt="Custom connector name and MCP server URL">
+          <img class="gallery-img" src="images/connect-step3.jpg" alt="Claude detecting the connector configuration">
+          <img class="gallery-img" src="images/connect-step4.jpg" alt="Advanced settings with Client ID and Client Secret">
+          <img class="gallery-img" src="images/connect-step5.jpg" alt="Salesforce sign-in">
+          <img class="gallery-img" src="images/connect-step6.jpg" alt="Multi-factor authentication">
+          <img class="gallery-img" src="images/connect-step7.jpg" alt="Authorizing the connection">
+          <div class="gallery-placeholder" id="connect-placeholder">
+            <span>Connection Steps</span>
+            <span style="font-size:11px;opacity:0.6;font-weight:400;letter-spacing:1px;">images/connect-step1.png &nbsp;·&nbsp; step3 &ndash; step7</span>
+          </div>
+        </div>
+        <div class="gallery-controls">
+          <button class="gallery-btn" onclick="connectGo(-1)">&#8592;</button>
+          <span class="gallery-counter" id="connect-counter">1 / 6</span>
+          <button class="gallery-btn" onclick="connectGo(1)">&#8594;</button>
+        </div>
+        <div class="gallery-dots" id="connect-dots">
+          <span class="gallery-dot active" onclick="connectShow(0)"></span>
+          <span class="gallery-dot" onclick="connectShow(1)"></span>
+          <span class="gallery-dot" onclick="connectShow(2)"></span>
+          <span class="gallery-dot" onclick="connectShow(3)"></span>
+          <span class="gallery-dot" onclick="connectShow(4)"></span>
+          <span class="gallery-dot" onclick="connectShow(5)"></span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -835,31 +867,50 @@
 </div>
 
 <script>
-  // ── Slide 3 gallery ──────────────────────────────────────────────────────
-  const slide3Imgs  = [...document.querySelectorAll('#slide3-gallery .gallery-img')];
-  const slide3Dots  = [...document.querySelectorAll('#slide3-dots .gallery-dot')];
-  const slide3Ph    = document.getElementById('slide3-placeholder');
-  const slide3Ctr   = document.getElementById('slide3-counter');
-  let slide3Idx     = 0;
-  let slide3Loaded  = false;
+  // ── Connect-steps gallery (slide 04) ─────────────────────────────────────
+  const connectImgs = [...document.querySelectorAll('#connect-gallery .gallery-img')];
+  const connectDots = [...document.querySelectorAll('#connect-dots .gallery-dot')];
+  const connectPh   = document.getElementById('connect-placeholder');
+  const connectCtr  = document.getElementById('connect-counter');
+  let connectIdx    = 0;
+  let connectLoaded = false;
 
-  function slide3Show(n) {
-    slide3Idx = (n + slide3Imgs.length) % slide3Imgs.length;
-    slide3Imgs.forEach((img, k) => img.classList.toggle('gallery-active', k === slide3Idx));
-    slide3Dots.forEach((d,   k) => d.classList.toggle('active',          k === slide3Idx));
-    slide3Ctr.textContent = (slide3Idx + 1) + ' / ' + slide3Imgs.length;
+  const connectStage = document.querySelector('#connect-gallery .gallery-stage');
+
+  // These screenshots run from 0.61 (tall portrait) to 1.34 aspect. A single
+  // fixed stage height would shrink the tall ones to ~25% of native, so size
+  // the stage to whichever image is showing and let the slide scroll.
+  function fitConnectStage(img) {
+    if (!img || !img.naturalWidth) return;
+    const pad  = 20;
+    const availW = connectStage.clientWidth - pad;
+    const maxH = Math.min(760, Math.round(window.innerHeight * 0.72));
+    const idealH = Math.round(availW * img.naturalHeight / img.naturalWidth);
+    connectStage.style.height = Math.max(320, Math.min(maxH, idealH) + pad) + 'px';
   }
 
-  function slide3Go(d) { slide3Show(slide3Idx + d); }
+  function connectShow(n) {
+    connectIdx = (n + connectImgs.length) % connectImgs.length;
+    connectImgs.forEach((img, k) => img.classList.toggle('gallery-active', k === connectIdx));
+    connectDots.forEach((d,   k) => d.classList.toggle('active',           k === connectIdx));
+    connectCtr.textContent = (connectIdx + 1) + ' / ' + connectImgs.length;
+    fitConnectStage(connectImgs[connectIdx]);
+  }
 
-  slide3Imgs.forEach(img => {
+  window.addEventListener('resize', () => fitConnectStage(connectImgs[connectIdx]));
+
+  function connectGo(d) { connectShow(connectIdx + d); }
+
+  connectImgs.forEach(img => {
     img.onload = () => {
-      if (!slide3Loaded) {
-        slide3Loaded = true;
-        if (slide3Ph) slide3Ph.style.display = 'none';
-        slide3Show(0);
+      if (!connectLoaded) {
+        connectLoaded = true;
+        if (connectPh) connectPh.style.display = 'none';
+        connectShow(0);
       }
     };
+    // Contained screenshots can be small; let attendees open the full size.
+    img.addEventListener('click', () => window.open(img.src, '_blank', 'noopener'));
   });
 
   // ── Dashboard image gallery ───────────────────────────────────────────────
