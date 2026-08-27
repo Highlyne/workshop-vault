@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive AI Workshop · Exercise Guide · Aug 27, 2026</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bwob-blue: #1B4A9C;
+    --bwob-blue-deep: #143774;
+    --bwob-blue-soft: #E8EEF8;
+    --bwob-gold: #C9A24B;
+    --bwob-gold-deep: #A6822F;
+    --bwob-gold-soft: #F5EBD3;
+    --bwob-cream: #FAF6EC;
+    --bwob-cream-soft: #FDFBF5;
+    --ink: #0F1A2B;
+    --ink-soft: #2A3548;
+    --ink-muted: #5A6478;
+    --paper: #FFFFFF;
+    --line: #D8DFEC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bwob-blue-deep);
+    color: var(--ink);
+    font-family: "Helvetica Neue", "Arial", "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.65;
+  }
+
+  /* ── Deck & slides ── */
+  .deck { height: 100vh; overflow: hidden; }
+  .slide {
+    display: none;
+    height: 100vh;
+    padding: 7vh 8vw 10vh;
+    background: var(--bwob-cream);
+    overflow: auto;
+  }
+  .slide.active { display: block; }
+
+  /* Cover slide */
+  .slide-cover {
+    background: var(--bwob-blue);
+    color: var(--bwob-cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .slide-cover::before {
+    content: "";
+    position: absolute;
+    width: 480px; height: 480px;
+    right: -140px; top: -160px;
+    background: var(--bwob-blue-deep);
+    border-radius: 50%;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .slide-cover::after {
+    content: "";
+    position: absolute;
+    width: 320px; height: 320px;
+    left: -110px; bottom: -180px;
+    background: var(--bwob-gold);
+    opacity: 0.08;
+    transform: rotate(18deg);
+    pointer-events: none;
+  }
+  .slide-cover .content {
+    position: relative;
+    z-index: 1;
+    max-width: 1180px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 48px;
+    align-items: center;
+  }
+  .cover-intro { min-width: 0; }
+  .slide-cover h1 { margin-bottom: 20px; }
+  .slide-cover .meta { margin-bottom: 0; }
+  /* Stack on narrow screens and let the cover scroll rather than clip */
+  @media (max-width: 980px) {
+    .slide-cover .content { grid-template-columns: minmax(0, 1fr); gap: 26px; align-items: start; }
+    .slide-cover { overflow: auto; }
+  }
+  .slide-cover .kicker { color: var(--bwob-gold); }
+  .slide-cover h1 { color: var(--bwob-cream); }
+  .slide-cover .lead { color: rgba(250, 246, 236, 0.88); }
+  .slide-cover .meta { color: var(--bwob-cream); }
+  .slide-cover .callout {
+    background: rgba(250, 246, 236, 0.07);
+    border: 1px solid rgba(250, 246, 236, 0.25);
+    color: var(--bwob-cream);
+    font-weight: 600;
+  }
+
+  /* ── Typography ── */
+  .kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--bwob-gold-deep);
+    margin-bottom: 20px;
+    display: block;
+  }
+  .slide h1 {
+    font-family: "Georgia", "Iowan Old Style", serif;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+    font-weight: 400;
+    margin: 0 0 28px;
+    color: var(--ink);
+  }
+  .slide h2 {
+    font-family: "Georgia", serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--bwob-blue);
+    margin: 24px 0 10px;
+    letter-spacing: -0.2px;
+  }
+  .content {
+    max-width: 980px;
+    font-size: 20px;
+    line-height: 1.55;
+  }
+  .lead {
+    font-size: 28px;
+    color: var(--ink-muted);
+    font-weight: 300;
+    margin: 0 0 20px;
+  }
+  .meta {
+    font-weight: 700;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  p { margin: 0 0 14px; }
+  ol, ul { margin: 10px 0 16px; padding-left: 22px; }
+  li { margin: 11px 0; color: var(--ink-soft); font-size: 18px; }
+
+  /* ── Callouts ── */
+  .callout {
+    padding: 18px 22px;
+    background: var(--bwob-gold);
+    color: var(--bwob-blue-deep);
+    margin: 18px 0;
+    border-radius: 3px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .callout b { color: var(--bwob-blue-deep); }
+
+  /* ── Prompts ── */
+  .prompt {
+    padding: 18px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--bwob-gold);
+    margin: 18px 0;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.5;
+    font-family: "Georgia", serif;
+    font-style: italic;
+  }
+
+  /* ── Grid cards ── */
+  .grid2, .grid3 { display: grid; gap: 20px; margin-top: 16px; }
+  .grid2 { grid-template-columns: 1fr 1fr; }
+  .grid3 { grid-template-columns: repeat(3, 1fr); }
+  .grid2 > div, .grid3 > div {
+    background: var(--paper);
+    padding: 22px 20px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    position: relative;
+  }
+  .grid2 > div::before, .grid3 > div::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    height: 3px; width: 40px;
+    background: var(--bwob-gold);
+  }
+  .grid2 > div h2, .grid3 > div h2 {
+    margin-top: 12px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 700;
+    color: var(--bwob-blue);
+  }
+  .grid2 > div p, .grid3 > div p {
+    color: var(--ink-muted);
+    font-size: 15px;
+  }
+
+  /* ── Dashboard image gallery ── */
+  .gallery {
+    width: 100%;
+    max-width: 860px;
+    margin-bottom: 24px;
+  }
+  .gallery-stage {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    background: var(--bwob-blue-soft);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .gallery-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .gallery-img.gallery-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .gallery-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--bwob-blue);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 2px dashed var(--bwob-blue);
+    border-radius: 4px;
+  }
+  .gallery-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .gallery-btn {
+    background: var(--bwob-blue);
+    border: none;
+    color: var(--bwob-cream);
+    border-radius: 2px;
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gallery-btn:hover { background: var(--bwob-blue-deep); }
+  .gallery-counter {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    min-width: 36px;
+    text-align: center;
+  }
+  .gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .gallery-dot.active { background: var(--bwob-blue); }
+
+  /* ── Copyable text ── */
+  .copyable {
+    color: var(--bwob-blue-deep);
+    font-weight: 700;
+  }
+
+  /* ── Inline clipboard button ── */
+  .inline-copy {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 0 2px;
+    vertical-align: middle;
+    opacity: 0.55;
+    transition: opacity 0.15s;
+    line-height: 1;
+  }
+  .inline-copy:hover { opacity: 1; }
+
+  /* ── Cover registration form & deck gate ── */
+  .reg-form {
+    background: rgba(250, 246, 236, 0.07);
+    border: 1px solid rgba(250, 246, 236, 0.25);
+    border-radius: 4px;
+    padding: 22px 22px 20px;
+    margin: 0;
+  }
+  .reg-form h2 {
+    font-family: "Georgia", serif;
+    font-size: 16px !important;
+    font-weight: 500;
+    color: var(--bwob-gold) !important;
+    margin: 0 0 4px !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+  .reg-form .reg-sub {
+    font-size: 13px;
+    color: rgba(250, 246, 236, 0.7);
+    margin: 0 0 16px;
+  }
+  .reg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .reg-field { display: flex; flex-direction: column; gap: 5px; }
+  .reg-field.full { grid-column: 1 / -1; }
+  .reg-field label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(250, 246, 236, 0.6);
+  }
+  .reg-field input {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid rgba(250, 246, 236, 0.28);
+    border-radius: 3px;
+    font-size: 14px;
+    color: var(--bwob-cream);
+    background: rgba(15, 26, 43, 0.25);
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: inherit;
+  }
+  .reg-field input:focus {
+    border-color: var(--bwob-gold);
+    background: rgba(15, 26, 43, 0.4);
+  }
+  .reg-submit {
+    margin-top: 16px;
+    background: var(--bwob-gold);
+    color: var(--bwob-blue-deep);
+    border: none;
+    border-radius: 3px;
+    padding: 11px 26px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+  .reg-submit:hover { background: var(--bwob-gold-deep); }
+  .reg-submit:disabled { opacity: 0.6; cursor: default; }
+  .reg-error {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #F3B0A5;
+    display: none;
+  }
+  /* confirmation shown in place of the form once registered */
+  .reg-done {
+    display: none;
+    background: rgba(250, 246, 236, 0.07);
+    border: 1px solid var(--bwob-gold);
+    border-radius: 4px;
+    padding: 20px 22px;
+    margin: 0;
+    color: var(--bwob-cream);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .reg-done .reg-done-sub {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(250, 246, 236, 0.7);
+  }
+  /* Honeypot: off-screen rather than display:none so naive bots still fill it */
+  .reg-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px; height: 1px;
+    overflow: hidden;
+  }
+  /* Nav buttons hide rather than disappear, so the bar keeps its layout */
+  .controls button.locked { visibility: hidden; }
+
+  @media (max-width: 600px) {
+    .reg-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Copy button (top-right fixed) ── */
+  .copybtn-panel {
+    background: var(--bwob-blue-deep);
+    border: 1px solid rgba(201,162,75,0.4);
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+  }
+  .copybtn-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(250,246,236,0.5);
+  }
+  .copybtn {
+    background: var(--bwob-gold);
+    border: 1px solid var(--bwob-gold-deep);
+    color: var(--bwob-blue-deep);
+    border-radius: 3px;
+    padding: 14px 24px;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.18s ease;
+    white-space: nowrap;
+  }
+  .copybtn:hover { background: var(--bwob-gold-soft); }
+
+  /* ── Navigation controls ── */
+  .controls {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 58px;
+    background: var(--bwob-blue-deep);
+    border-top: 2px solid var(--bwob-gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color: var(--bwob-cream);
+    z-index: 10;
+  }
+  .controls button {
+    background: var(--bwob-blue);
+    border: 1px solid rgba(250, 246, 236, 0.25);
+    color: var(--bwob-cream);
+    border-radius: 2px;
+    padding: 9px 18px;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.18s ease;
+  }
+  .controls button:hover { background: #1a3e7a; }
+  .counter {
+    font-size: 11px;
+    color: rgba(250, 246, 236, 0.65);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  @media (max-width: 800px) {
+    .slide { padding: 6vh 6vw 12vh; }
+    .content { font-size: 17px; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+    .slide h1 { font-size: 40px; }
+    .lead { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="deck">
+
+  <!-- 01 Cover -->
+  <section class="slide slide-cover">
+    <div class="content">
+      <div class="cover-intro">
+        <span class="kicker">Executive AI Workshop</span>
+        <h1>From connected AI<br>to executive action</h1>
+        <p class="lead">Hands-on exercise guide</p>
+        <p class="meta">August 27, 2026<br>90-minute workshop<br>Claude &nbsp;·&nbsp; Salesforce &nbsp;·&nbsp; Google &nbsp;·&nbsp; Executive Analytics</p>
+      </div>
+      <div id="reg-form-wrap" class="reg-form">
+        <h2>Register to begin</h2>
+        <p class="reg-sub">Workshop companion &nbsp;·&nbsp; browser-ready</p>
+        <form id="reg-form" onsubmit="submitReg(event)">
+          <div class="reg-grid">
+            <div class="reg-field">
+              <label for="reg-first">First Name</label>
+              <input id="reg-first" name="first_name" type="text" required autocomplete="given-name">
+            </div>
+            <div class="reg-field">
+              <label for="reg-last">Last Name</label>
+              <input id="reg-last" name="last_name" type="text" required autocomplete="family-name">
+            </div>
+            <div class="reg-field full">
+              <label for="reg-email">Email</label>
+              <input id="reg-email" name="email" type="email" required autocomplete="email">
+            </div>
+            <div class="reg-field full">
+              <label for="reg-company">Company</label>
+              <input id="reg-company" name="company" type="text" required autocomplete="organization">
+            </div>
+          </div>
+          <div class="reg-hp" aria-hidden="true">
+            <label for="reg-website">Website</label>
+            <input id="reg-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <button class="reg-submit" type="submit" id="reg-btn">Start the Workshop</button>
+          <div class="reg-error" id="reg-error">Something went wrong. Please try again or ask your facilitator.</div>
+        </form>
+      </div>
+
+      <div id="reg-done" class="reg-done">
+        You&rsquo;re all set &mdash; use <b>Next</b> to begin.
+        <span class="reg-done-sub">Your facilitator will share the org credentials during the session.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Orientation: What is MCP -->
+  <section class="slide">
+    <span class="kicker">01 — Orientation</span>
+    <h1>Before You Begin</h1>
+    <div class="content">
+      <h2>What is MCP?</h2>
+      <div class="callout">MCP gives AI applications a consistent way to connect to external systems, data, and tools.</div>
+      <h2>Why it matters</h2>
+      <ul>
+        <li>AI can work with business context.</li>
+        <li>You can ask in business language.</li>
+        <li>Claude can chain capabilities.</li>
+        <li>Multiple systems can contribute to one answer.</li>
+      </ul>
+      <div class="callout"><b>Connection &ne; permission.</b> Access is still governed by authentication, sharing, permissions, and exposed tools.</div>
+    </div>
+  </section>
+
+  <!-- 03 Orientation: How it Works -->
+  <section class="slide">
+    <span class="kicker">02 — Orientation</span>
+    <div class="content" style="max-width:100%;">
+      <img src="images/how-it-works.jpg" alt="How it works: Claude calls the Salesforce Hosted MCP server through the connector, which reads data and returns a grounded answer." style="width:100%;max-width:960px;display:block;border-radius:4px;" onerror="this.style.display='none';document.getElementById('how-it-works-fallback').style.display='flex';">
+      <div id="how-it-works-fallback" class="gallery-placeholder" style="display:none;position:relative;inset:auto;height:380px;max-width:960px;">
+        <span>How It Works</span>
+        <span style="font-size:11px;opacity:0.6;font-weight:400;letter-spacing:1px;">images/how-it-works.jpg</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Connect Salesforce: Part 1 -->
+  <section class="slide">
+    <span class="kicker">03 — Connect</span>
+    <h1>Connect Claude to Salesforce</h1>
+    <div class="content">
+      <div class="callout">We already completed the Salesforce MCP server and External Client App setup for you.</div>
+      <ol>
+        <li>Open <a href="https://claude.ai/login" target="_blank" rel="noopener noreferrer"><b>claude.ai</b></a> and sign in.</li>
+        <li>Find the <b>+</b> button inside of your chat box. Click that button.</li>
+        <li>Click <b>Connectors</b> &rarr; <b>+ Add Connector</b> &rarr; <b>... Add custom connector</b></li>
+      </ol>
+
+      <div class="gallery" id="slide3-gallery" style="margin-top:24px;">
+        <div class="gallery-stage">
+          <img class="gallery-img" src="images/connect-step1.png" alt="Connect step 1">
+          <img class="gallery-img" src="images/connect-step2.png" alt="Connect step 2">
+          <div class="gallery-placeholder" id="slide3-placeholder">
+            <span>Connection Steps</span>
+            <span style="font-size:11px;opacity:0.6;font-weight:400;letter-spacing:1px;">images/connect-step1.png &nbsp;·&nbsp; connect-step2.png</span>
+          </div>
+        </div>
+        <div class="gallery-controls">
+          <button class="gallery-btn" onclick="slide3Go(-1)">&#8592;</button>
+          <span class="gallery-counter" id="slide3-counter">1 / 2</span>
+          <button class="gallery-btn" onclick="slide3Go(1)">&#8594;</button>
+        </div>
+        <div class="gallery-dots" id="slide3-dots">
+          <span class="gallery-dot active" onclick="slide3Show(0)"></span>
+          <span class="gallery-dot" onclick="slide3Show(1)"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Connect Salesforce: Part 2 -->
+  <section class="slide">
+    <span class="kicker">04 — Connect</span>
+    <h1>Connect Claude to Salesforce</h1>
+    <div class="content">
+      <div class="callout">Your facilitator will share the workshop credentials during the session.</div>
+      <ol start="4">
+        <li>Name the Custom Connector <b class="copyable">Salesforce Workshop</b> <button class="inline-copy" onclick="copyInline('Salesforce Workshop', this)" title="Copy to clipboard">&#128203;</button>.</li>
+        <li>Paste the workshop MCP Server URL: <b class="copyable">https://api.salesforce.com/platform/mcp/v1/platform/sobject-all</b> <button class="inline-copy" onclick="copyInline('https://api.salesforce.com/platform/mcp/v1/platform/sobject-all', this)" title="Copy to clipboard">&#128203;</button>.</li>
+        <li>Click continue. Claude will automatically detect which choices should be selected next.</li>
+        <li>Open <b>Advanced settings</b>; enter the Client ID and Client Secret shared by your facilitator.</li>
+        <li>Click <b>Connect</b>.</li>
+        <li>Sign in to Salesforce with the workshop username and password, then complete MFA.</li>
+        <li>Authorize the connection.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 06 Salesforce: Understand Account -->
+  <section class="slide">
+    <span class="kicker">05 — Salesforce</span>
+    <h1>Find and Understand the Account</h1>
+    <div class="content">
+      <div class="prompt">"Tell me what we know about Apex Supply Chain."</div>
+      <h2>Follow-up</h2>
+      <div class="prompt">"What should I be concerned about?"</div>
+      <div class="callout">You did not need to know a Salesforce Account ID.</div>
+    </div>
+  </section>
+
+  <!-- 07 Salesforce: Business -->
+  <section class="slide">
+    <span class="kicker">06 — Salesforce</span>
+    <h1>Understand the Business</h1>
+    <div class="content">
+      <div class="prompt">"Summarize this quarter's pipeline."</div>
+      <div class="prompt">"What are the three things I should pay attention to?"</div>
+      <div class="callout">Salesforce supplies trusted business data. Claude supplies interpretation and communication.</div>
+    </div>
+  </section>
+
+  <!-- 08 Connect Google -->
+  <section class="slide">
+    <span class="kicker">07 — Connect</span>
+    <h1>Connect Google</h1>
+    <div class="content">
+      <ol>
+        <li>In Claude Desktop, click <b>⊕</b>.</li>
+        <li>Click <b>Browse connectors</b>.</li>
+        <li>Google Drive &rarr; Install &rarr; Authenticate.</li>
+        <li>Gmail &rarr; Install &rarr; Authenticate.</li>
+        <li>Google Calendar &rarr; Install &rarr; Authenticate.</li>
+        <li>Ask: <b>"What's on my calendar for the rest of today?"</b></li>
+      </ol>
+      <div class="callout">If Claude pulls your real calendar events, you are ready.</div>
+    </div>
+  </section>
+
+  <!-- 09 Google: Email Triage -->
+  <section class="slide">
+    <span class="kicker">08 — Google</span>
+    <h1>Email Triage</h1>
+    <div class="content">
+      <div class="prompt">"Look at my inbox from the last 24 hours and tell me the 3 things that need a decision or response from me today. For each one, give me the sender, subject, and one sentence on what's needed."</div>
+      <div class="prompt">"Draft a brief reply to the first item you surfaced. Keep it under 3 sentences."</div>
+    </div>
+  </section>
+
+  <!-- 10 Google: Meeting Prep -->
+  <section class="slide">
+    <span class="kicker">09 — Google</span>
+    <h1>Meeting Prep</h1>
+    <div class="content">
+      <div class="prompt">"Prep me for my next meeting. Look at my calendar, find the event, identify who's attending, and check if I've had any recent email threads with them. Then write me a 1-page briefing: meeting purpose, attendees with context on each, any open items from prior communication, and 2–3 suggested talking points."</div>
+      <div class="prompt">"What questions should I be prepared to answer in this meeting?"</div>
+    </div>
+  </section>
+
+  <!-- 11 Orchestration: Combine -->
+  <section class="slide">
+    <span class="kicker">10 — Orchestration</span>
+    <h1>Combine Salesforce + Google</h1>
+    <div class="content">
+      <div class="prompt">"Prepare me for my 2 PM meeting with Acme Manufacturing."</div>
+      <div class="grid2">
+        <div>
+          <h2>Salesforce</h2>
+          <p>Account &nbsp;·&nbsp; Opportunities &nbsp;·&nbsp; Activity &nbsp;·&nbsp; Issues</p>
+        </div>
+        <div>
+          <h2>Google</h2>
+          <p>Calendar &nbsp;·&nbsp; Gmail &nbsp;·&nbsp; Drive</p>
+        </div>
+      </div>
+      <div class="callout">Do not tell Claude which tools to use. Let it determine what it needs.</div>
+    </div>
+  </section>
+
+  <!-- 12 Orchestration: Executive Briefing -->
+  <section class="slide">
+    <span class="kicker">11 — Orchestration</span>
+    <h1>Your Executive Briefing</h1>
+    <div class="content">
+      <div class="prompt">"Prepare my executive briefing for today."</div>
+      <ul>
+        <li>Which systems did Claude use?</li>
+        <li>Which tools did it select?</li>
+        <li>What did it combine?</li>
+        <li>What did it not know?</li>
+      </ul>
+      <div class="callout">What additional enterprise system would make this briefing more useful?</div>
+    </div>
+  </section>
+
+  <!-- 13 Google: Automate a Routine -->
+  <section class="slide">
+    <span class="kicker">12 — Google</span>
+    <h1>Automate a Routine</h1>
+    <div class="content">
+      <div class="prompt">"Look at my calendar for the coming week and summarize what I have ahead — key meetings, any back-to-back days, and anything I should be preparing for now. Keep it under 2 minutes to read."</div>
+      <ol>
+        <li>Click the clock icon.</li>
+        <li>Select <b>New scheduled task</b>.</li>
+        <li>Set Monday at 7:30 am or your preferred time.</li>
+        <li>Paste the weekly digest prompt.</li>
+        <li>Save.</li>
+      </ol>
+      <div class="callout">A useful prompt can become a repeatable workflow.</div>
+    </div>
+  </section>
+
+  <!-- 14 Capstone: Build Dashboard -->
+  <section class="slide">
+    <span class="kicker">13 — Capstone</span>
+    <h1>Build an Executive Dashboard</h1>
+    <div class="content">
+      <p>Now it’s time to turn connected data into an executive decision tool. In this exercise, you’ll ask Claude to analyze Salesforce data, identify the metrics and insights that matter most, and create a polished, interactive dashboard you can open directly in your browser. The goal isn’t just to build a dashboard. It’s to experience how AI can help transform business data into insight, action, and a clearer executive story.</p>
+
+      <!-- Dashboard image gallery -->
+      <div class="gallery" id="dash-gallery" style="margin-top:32px;">
+        <div class="gallery-stage">
+          <img class="gallery-img" src="images/dash-top.jpg"   alt="Dashboard preview 1">
+          <img class="gallery-img" src="images/dash-mid-1.jpg" alt="Dashboard preview 2">
+          <img class="gallery-img" src="images/dash-mid-2.jpg" alt="Dashboard preview 3">
+          <div class="gallery-placeholder" id="gallery-placeholder">
+            <span>Dashboard Preview</span>
+            <span style="font-size:11px;opacity:0.6;font-weight:400;letter-spacing:1px;">images/dash-top.jpg &nbsp;·&nbsp; dash-mid-1.jpg &nbsp;·&nbsp; dash-mid-2.jpg</span>
+          </div>
+        </div>
+        <div class="gallery-controls">
+          <button class="gallery-btn" id="gallery-prev" onclick="galleryGo(-1)">&#8592;</button>
+          <span class="gallery-counter" id="gallery-counter">1 / 3</span>
+          <button class="gallery-btn" id="gallery-next" onclick="galleryGo(1)">&#8594;</button>
+        </div>
+        <div class="gallery-dots" id="gallery-dots">
+          <span class="gallery-dot active" onclick="galleryShow(0)"></span>
+          <span class="gallery-dot" onclick="galleryShow(1)"></span>
+          <span class="gallery-dot" onclick="galleryShow(2)"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 Capstone: Dashboard Prompt -->
+  <section class="slide" id="slide-dash-prompt">
+    <span class="kicker">14 — Capstone</span>
+    <h1>Dashboard Prompt</h1>
+    <div class="content">
+      <div class="callout"><b>35 minutes of our 90-minute workshop</b> &nbsp;·&nbsp; Black Women On Boards AI Workshop</div>
+      <ol>
+        <li>Open Claude Desktop.</li>
+        <li>Start a new conversation.</li>
+        <li>Paste the dashboard prompt.</li>
+        <li>Watch as Claude creates a downloadable self-contained HTML dashboard.</li>
+        <li>Open it in a browser.</li>
+        <li>Review proposed metrics and layout.</li>
+        <li>Refine it.</li>
+        <li><b>Bonus:</b> Ask Claude to prepare a two-minute executive briefing.</li>
+      </ol>
+      <p><b>Important:</b> All data is synthetic workshop data.</p>
+    </div>
+  </section>
+
+  <!-- 16 Close -->
+  <section class="slide">
+    <span class="kicker">15 — Close</span>
+    <h1>Executive Briefing Challenge</h1>
+    <div class="content">
+      <h2>Your turn</h2>
+      <p>Think about one dashboard you would build with your own company data. What decision would it help an executive make?</p>
+      <ul>
+        <li>What is the most important thing leadership should know?</li>
+        <li>What is going well?</li>
+        <li>What requires attention?</li>
+        <li>What should leadership do next?</li>
+      </ul>
+      
+      <div class="callout"><b>Final takeaway:</b> Connected AI is not the end state. The opportunity is better context, better questions, and better decisions.</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Copy button -->
+<div id="copy-dash-btn" style="position:fixed;top:50%;right:22px;transform:translateY(-50%);z-index:20;display:none;">
+  <div class="copybtn-panel">
+    <span class="copybtn-label">Step 3</span>
+    <button class="copybtn" onclick="copyDash()">Copy Dashboard Prompt</button>
+  </div>
+</div>
+
+<!-- Navigation controls -->
+<div class="controls">
+  <button id="prev">&#8592; Previous</button>
+  <div class="counter" id="counter"></div>
+  <button id="next">Next &#8594;</button>
+</div>
+
+<script>
+  // ── Slide 3 gallery ──────────────────────────────────────────────────────
+  const slide3Imgs  = [...document.querySelectorAll('#slide3-gallery .gallery-img')];
+  const slide3Dots  = [...document.querySelectorAll('#slide3-dots .gallery-dot')];
+  const slide3Ph    = document.getElementById('slide3-placeholder');
+  const slide3Ctr   = document.getElementById('slide3-counter');
+  let slide3Idx     = 0;
+  let slide3Loaded  = false;
+
+  function slide3Show(n) {
+    slide3Idx = (n + slide3Imgs.length) % slide3Imgs.length;
+    slide3Imgs.forEach((img, k) => img.classList.toggle('gallery-active', k === slide3Idx));
+    slide3Dots.forEach((d,   k) => d.classList.toggle('active',          k === slide3Idx));
+    slide3Ctr.textContent = (slide3Idx + 1) + ' / ' + slide3Imgs.length;
+  }
+
+  function slide3Go(d) { slide3Show(slide3Idx + d); }
+
+  slide3Imgs.forEach(img => {
+    img.onload = () => {
+      if (!slide3Loaded) {
+        slide3Loaded = true;
+        if (slide3Ph) slide3Ph.style.display = 'none';
+        slide3Show(0);
+      }
+    };
+  });
+
+  // ── Dashboard image gallery ───────────────────────────────────────────────
+  const galleryImgs  = [...document.querySelectorAll('#dash-gallery .gallery-img')];
+  const galleryDots  = [...document.querySelectorAll('#dash-gallery .gallery-dot')];
+  const placeholder  = document.getElementById('gallery-placeholder');
+  const counterEl    = document.getElementById('gallery-counter');
+  let galleryIdx     = 0;
+  let anyLoaded      = false;
+
+  function galleryShow(n) {
+    galleryIdx = (n + galleryImgs.length) % galleryImgs.length;
+    galleryImgs.forEach((img, k) => img.classList.toggle('gallery-active', k === galleryIdx));
+    galleryDots.forEach((d,   k) => d.classList.toggle('active',          k === galleryIdx));
+    counterEl.textContent = (galleryIdx + 1) + ' / ' + galleryImgs.length;
+  }
+
+  function galleryGo(d) { galleryShow(galleryIdx + d); }
+
+  galleryImgs.forEach((img, k) => {
+    img.onload = () => {
+      if (!anyLoaded) {
+        anyLoaded = true;
+        if (placeholder) placeholder.style.display = 'none';
+        galleryShow(0);
+      }
+    };
+  });
+
+  // ── Slide navigation ──────────────────────────────────────────────────────
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+
+  // Slide carrying the dashboard prompt, resolved by id so inserting or
+  // reordering slides cannot detach the floating copy button from it again.
+  const dashPromptIdx = slides.findIndex(sl => sl.id === 'slide-dash-prompt');
+
+  // The deck stays on the cover until the registration form is submitted.
+  // Persisted so a refresh does not make an attendee register twice.
+  // Append ?reset to the URL to clear it (useful when rehearsing the deck).
+  if (/(^|[?&])reset($|[=&])/.test(location.search)) {
+    try { localStorage.removeItem('bwobRegistered'); } catch (err) {}
+  }
+  let registered = false;
+  try { registered = localStorage.getItem('bwobRegistered') === '1'; } catch (err) {}
+
+  function show(n) {
+    if (!Number.isFinite(n)) n = 0;      // guard against a non-numeric #hash
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if (!registered) n = 0;              // gate: cover only until registered
+    i = n;
+    slides.forEach((sl, k) => sl.classList.toggle('active', k === i));
+    // The cover is unnumbered, so the counter tracks the kicker numbers.
+    document.getElementById('counter').textContent =
+      (i === 0) ? 'Cover' : i + ' / ' + (slides.length - 1);
+    document.getElementById('copy-dash-btn').style.display =
+      (i === dashPromptIdx) ? 'block' : 'none';
+    document.getElementById('next').classList.toggle('locked', !registered);
+    document.getElementById('prev').classList.toggle('locked', i === 0);
+    history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function go(d) { show(i + d); }
+
+  document.getElementById('prev').onclick = () => go(-1);
+  document.getElementById('next').onclick = () => go(1);
+
+  document.addEventListener('keydown', e => {
+    // Let the arrow/space shortcuts fall through to the form fields
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target.tagName || '').toUpperCase())) return;
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+  });
+
+  function unlockDeck() {
+    registered = true;
+    try { localStorage.setItem('bwobRegistered', '1'); } catch (err) {}
+    document.getElementById('reg-form-wrap').style.display = 'none';
+    document.getElementById('reg-done').style.display = 'block';
+    document.getElementById('next').classList.remove('locked');
+  }
+
+  // ── Registration & Web-to-Lead submission ─────────────────────────────────
+  function submitReg(e) {
+    e.preventDefault();
+    // Honeypot: humans never see this field, so anything in it is a bot.
+    // Client-side only — it cannot stop a bot POSTing the endpoint directly.
+    if (document.getElementById('reg-website').value !== '') return;
+
+    const btn = document.getElementById('reg-btn');
+    const errEl = document.getElementById('reg-error');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    errEl.style.display = 'none';
+
+    const first   = document.getElementById('reg-first').value.trim();
+    const last    = document.getElementById('reg-last').value.trim();
+    const email   = document.getElementById('reg-email').value.trim();
+    const company = document.getElementById('reg-company').value.trim();
+
+    // Post to Web-to-Lead via a hidden iframe to avoid page navigation
+    const iframe = document.createElement('iframe');
+    iframe.name = 'w2l_target';
+    iframe.style.display = 'none';
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8';
+    form.target = 'w2l_target';
+
+    const fields = {
+      oid:        '00DgK00000YJs17',
+      retURL:     'https://webto.salesforce.com/success',  // required but unused
+      first_name: first,
+      last_name:  last,
+      email:      email,
+      company:    company,
+      lead_source: 'BWOB Executive AI Workshop 2026'
+    };
+
+    Object.entries(fields).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type  = 'hidden';
+      input.name  = name;
+      input.value = value;
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+
+    // Web-to-Lead is opaque cross-origin: we cannot read its response, but we
+    // can tell whether the POST actually reached Salesforce. A blank iframe
+    // fires load events of its own, so ignore any load where the document is
+    // still same-origin about:blank. Once it navigates to Salesforce, reading
+    // its location throws — that throw is our signal the POST went through.
+    let settled = false;
+    let timer;
+
+    function finish(ok) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      if (ok) {
+        unlockDeck();
+      } else {
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Start the Workshop';
+      }
+    }
+
+    iframe.onload = () => {
+      let stillBlank;
+      try {
+        stillBlank = iframe.contentWindow.location.href === 'about:blank';
+      } catch (err) {
+        stillBlank = false;   // cross-origin: it reached Salesforce
+      }
+      if (stillBlank) return;
+      finish(true);
+    };
+
+    document.body.appendChild(iframe);
+    form.submit();
+    timer = setTimeout(() => finish(false), 8000);
+  }
+
+  if (registered) unlockDeck();
+  const startAt = parseInt(location.hash.slice(1), 10);
+  show(Number.isFinite(startAt) ? startAt - 1 : 0);
+
+  // ── Clipboard ─────────────────────────────────────────────────────────────
+  // navigator.clipboard only exists in a secure context, so fall back to the
+  // legacy execCommand path when the guide is opened over file:// or http://.
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copy unavailable'));
+    });
+  }
+
+  // ── Inline text copy ─────────────────────────────────────────────────────
+  function copyInline(text, btn) {
+    copyText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓';
+      btn.style.opacity = '1';
+      setTimeout(() => { btn.textContent = orig; btn.style.opacity = ''; }, 1600);
+    }).catch(() => {
+      btn.textContent = '!';
+      setTimeout(() => { btn.textContent = '\u{1F4CB}'; }, 1600);
+    });
+  }
+
+  const dashboardPrompt = `# Executive Sales Dashboard
+
+You are an executive analytics consultant and dashboard designer.
+
+Using the connected **Salesforce SObject MCP server**, analyze the Salesforce Opportunity data available to me and create a polished, interactive **Executive Sales Dashboard**.
+
+The dashboard should help a business leader quickly answer:
+
+- How is the sales business performing?
+- How healthy is the current pipeline?
+- Where are the largest opportunities?
+- What requires leadership attention?
+- What actions should leadership consider next?
+
+All Salesforce data used in this exercise is **synthetic workshop data**. Do not imply that any person, company, opportunity, financial amount, or performance figure represents actual company information.
+
+---
+
+# 1. Discover the Salesforce Data
+
+Do not assume a custom schema or specific reporting period.
+
+Start by using the Salesforce MCP tools to understand the environment.
+
+## Inspect the Opportunity Schema
+
+Use the Salesforce schema tool to inspect the **Opportunity** object.
+
+Identify the available fields relevant to:
+
+- Opportunity name
+- Account
+- Owner
+- Amount
+- Stage
+- Probability
+- Close date
+- Forecast category
+- Closed status
+- Won status
+- Last activity date
+
+Do not query fields that the schema tool reports as unavailable.
+
+---
+
+# 2. Determine the Reporting Period
+
+Use SOQL to inspect the available Opportunity records and their CloseDate values.
+
+Determine the **most recent meaningful reporting period represented by the available synthetic data**.
+
+Do not assume Q3 2026 unless the Salesforce data supports it.
+
+Use the selected reporting period consistently throughout the dashboard.
+
+Briefly state which reporting period you selected and why.
+
+---
+
+# 3. Retrieve the Opportunity Data
+
+Use the Salesforce SOQL query tool to retrieve the Opportunity records required for the dashboard.
+
+Retrieve available fields such as:
+
+- Id
+- Name
+- Account.Name
+- Owner.Name
+- Amount
+- StageName
+- Probability
+- CloseDate
+- ForecastCategoryName
+- IsClosed
+- IsWon
+- LastActivityDate
+
+Only include fields confirmed to exist and be accessible.
+
+Use appropriate WHERE and LIMIT clauses.
+
+If one query cannot reliably retrieve everything required, use additional targeted SOQL queries.
+
+Do not repeatedly retry unavailable fields or objects.
+
+---
+
+# 4. Validate the Data
+
+Before creating any visualization, validate the records.
+
+Check:
+
+1. Opportunity IDs are unique.
+2. Amounts required for financial calculations are populated.
+3. Close dates are valid.
+4. Closed and Won status can be determined.
+5. Stage values are populated.
+6. Forecast categories are available, if applicable.
+7. Account and Owner information is available where possible.
+8. No obvious duplicate records would distort the calculations.
+
+Briefly summarize the validation results.
+
+If a field required for an optional analysis is unavailable, omit that analysis rather than inventing a replacement.
+
+---
+
+# 5. Calculate the Executive KPIs
+
+Calculate these metrics from the verified Salesforce records.
+
+## Open Pipeline
+
+For opportunities where IsClosed = false:
+
+- Total Amount
+- Opportunity count
+- Average open opportunity size
+
+## Closed Won Revenue
+
+For opportunities where IsWon = true:
+
+- Total Amount
+- Won opportunity count
+
+## Win Rate
+
+Calculate: **Won Opportunities / (Won Opportunities + Lost Opportunities) x 100**
+
+Use only closed opportunities.
+
+Show win rate, won count, and lost count.
+
+## Average Won Deal Size
+
+Calculate the average Amount of Won opportunities.
+
+## Stale Pipeline
+
+Identify open opportunities whose CloseDate is before today's date.
+
+Calculate overdue opportunity count and total overdue Amount.
+
+Retain the underlying opportunities for the Attention Required section.
+
+---
+
+# 6. Analyze Pipeline Composition
+
+## Stage Distribution
+
+Group open opportunities by StageName.
+
+For each stage calculate opportunity count, total Amount, and percentage of Open Pipeline.
+
+Present stages in logical sales-process order when possible.
+
+## Forecast Mix
+
+If ForecastCategoryName is available, group open opportunities by forecast category.
+
+For each category calculate opportunity count, total Amount, and percentage of Open Pipeline.
+
+If the field isn't available, omit this visualization.
+
+## Largest Opportunities
+
+Identify the largest open opportunities by Amount.
+
+Include enough context to help an executive understand their importance.
+
+---
+
+# 7. Identify Opportunities Requiring Attention
+
+Using only the available Salesforce data, identify opportunities that deserve leadership attention.
+
+Consider observable signals such as:
+
+- Close date has passed
+- Large Amount
+- Low Probability
+- Early Stage with an approaching Close Date
+- Old LastActivityDate, when available
+
+Do not invent a proprietary risk score.
+
+Instead, explain the specific observable reason each opportunity is being highlighted.
+
+---
+
+# 8. Reconcile the Analysis
+
+Before building the dashboard, verify:
+
+- Stage Distribution totals reconcile to Open Pipeline.
+- Forecast Mix reconciles to Open Pipeline when displayed.
+- Won + Lost counts reconcile to the closed opportunity population.
+- Closed Won Revenue reconciles to the Won opportunities.
+- Stale Pipeline contains only open opportunities with past Close Dates.
+
+Investigate discrepancies before rendering the dashboard.
+
+Do not hide reconciliation problems.
+
+---
+
+# 9. Build the Dashboard
+
+Create a polished **single-page Executive Sales Dashboard** that answers:
+
+> **What is happening in the business, where should I focus, and what should I do next?**
+
+## Header
+
+Display: **Executive Sales Dashboard** | **[Selected Reporting Period]** | **Synthetic Workshop Data**
+
+If appropriate, include the authenticated Salesforce user's name.
+
+## Hero KPI Row
+
+Create five prominent KPI cards:
+
+- **Open Pipeline**: Dollar amount + open opportunity count
+- **Closed Won Revenue**: Dollar amount + won opportunity count
+- **Win Rate**: Percentage + Won/Lost counts
+- **Average Won Deal Size**: Dollar amount
+- **Stale Pipeline**: Dollar amount + overdue opportunity count
+
+The first screen should allow an executive to understand the overall business situation within several seconds.
+
+## Pipeline Visualizations
+
+**Stage Distribution**: A clear horizontal visualization showing Stage, Amount, and deal count.
+
+**Forecast Mix**: When Forecast Category data is available, show Category, Amount, deal count, and percentage of Open Pipeline.
+
+**Top Opportunities**: Show the largest open opportunities by Amount.
+
+## Attention Required
+
+Create a prominent section containing the opportunities that deserve leadership attention.
+
+For each show: Opportunity, Account, Owner, Amount, Stage, Probability, Close Date, Forecast Category if available, and Reason for attention.
+
+Use restrained warning treatments.
+
+## Opportunity Detail
+
+Create a table containing the open opportunities, sorted by Amount descending.
+
+Include: Opportunity, Account, Owner, Stage, Amount, Probability, Close Date, Forecast Category, Status.
+
+Display **Overdue** when an open opportunity has a Close Date before today. Otherwise display **Open**.
+
+## Executive Insights and Recommended Actions
+
+**Three Findings**: Identify three meaningful findings supported directly by the Salesforce data. For each finding, state the data supporting it.
+
+**Two Risks**: Identify two material risks supported directly by the available data.
+
+**Three Recommended Actions**: Recommend three concrete leadership actions. Each action must trace directly to a finding or risk. Avoid generic sales advice.
+
+---
+
+# 10. Create the HTML Artifact
+
+Create a **single downloadable, self-contained HTML file**.
+
+The file must embed all data, HTML, CSS, and JavaScript; open locally in a browser; and require no server, database, Salesforce connection, API calls, or internet connection after generation.
+
+Do not use Chart.js, D3, Plotly, React, external JavaScript libraries, external CSS libraries, CDN dependencies, external fonts, or remotely hosted assets.
+
+Build visualizations using native HTML, CSS, JavaScript, and inline SVG.
+
+Important chart values must also be available as readable text.
+
+---
+
+# 11. Visual Design
+
+Use a sophisticated executive visual style: professional, modern, high contrast, strong typography, generous whitespace, clear hierarchy, restrained color, executive-friendly number formatting, subtle card treatments, and responsive layout.
+
+Use this restrained palette:
+
+- Primary blue: #0176d3
+- Dark blue: #014486
+- Success green: #2e844a
+- Warning orange: #fe9339
+- Danger red: #ea001e
+
+Avoid unnecessary animation, decorative clutter, tiny labels, and visualizations that don't help an executive make a decision.
+
+---
+
+# 12. Data Transparency
+
+Include **Synthetic Workshop Data** prominently and the following footer:
+
+> This dashboard was generated from synthetic Salesforce records for workshop demonstration purposes.
+> Data sourced from Salesforce through the Salesforce SObject MCP Server | Last refreshed [today's date]
+
+---
+
+# 13. Final Quality Check
+
+Before delivering the dashboard, confirm:
+
+1. Every KPI is calculated from Salesforce records actually retrieved.
+2. Dollar totals reconcile.
+3. Opportunity counts reconcile.
+4. Stage Distribution reconciles to Open Pipeline.
+5. Forecast Mix reconciles when displayed.
+6. Stale Pipeline contains only overdue open opportunities.
+7. No unavailable field or object was repeatedly queried.
+8. No unsupported metric was fabricated.
+9. Executive findings are supported by the data.
+10. Recommended actions trace to those findings.
+11. The HTML contains no external dependencies.
+12. The HTML works locally without an internet connection.
+13. Synthetic Workshop Data is clearly visible.
+
+Correct any issue you find before delivering the file.
+
+---
+
+# Deliverables
+
+Provide:
+
+1. A brief description of the Salesforce data you found.
+2. The reporting period you selected and why.
+3. A concise validation summary.
+4. A short description of the dashboard design.
+5. The completed downloadable HTML dashboard.
+6. A **two-minute executive briefing** containing: three things leadership should know, two risks requiring attention, and three recommended actions.
+
+Do not fabricate missing information. If the Salesforce data cannot support a requested analysis, omit that analysis and continue with the verified data.`;
+
+  function copyDash() {
+    copyText(dashboardPrompt)
+      .then(() => alert("Dashboard prompt copied. Use it in Claude Desktop."))
+      .catch(() => alert("Could not copy automatically. Please select the prompt text and copy it manually."));
+  }
+</script>
+</body>
+</html>
